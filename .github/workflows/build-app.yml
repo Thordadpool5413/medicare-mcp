@@ -39,9 +39,9 @@ jobs:
 
       - name: Build TypeScript app
         run: |
-          set -euo pipefail
+          set -o pipefail
           cd repo
-          npm run build
+          npm run build 2>&1 | tee ../typescript-build.log
 
       - name: Verify build output
         run: |
