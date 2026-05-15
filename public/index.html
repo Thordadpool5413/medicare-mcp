@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Medicare Intelligence Console</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero card">
+        <p class="eyebrow">CMS Medicare Data Console</p>
+        <h1>Medicare Intelligence Console</h1>
+        <p>Search Medicare providers, prescribers, hospitals, quality data, formularies, drug spending, and ASP pricing from one clean browser app.</p>
+        <div class="status"><span id="statusDot"></span><strong id="statusText">Checking API</strong></div>
+      </section>
+
+      <section class="grid">
+        <aside class="card modes">
+          <h2>Search Mode</h2>
+          <button class="mode active" data-mode="search_providers">Provider Services</button>
+          <button class="mode" data-mode="search_prescribers">Part D Prescribers</button>
+          <button class="mode" data-mode="search_hospitals">Hospitals</button>
+          <button class="mode" data-mode="search_hospitals_by_quality">Hospital Quality</button>
+          <button class="mode" data-mode="search_spending">Drug Spending</button>
+          <button class="mode" data-mode="search_formulary">Formulary Coverage</button>
+          <button class="mode" data-mode="get_asp_pricing">ASP Pricing</button>
+          <button class="mode" data-mode="get_asp_trend">ASP Trend</button>
+        </aside>
+
+        <section class="card workspace">
+          <p class="eyebrow" id="modeLabel">Provider Services</p>
+          <h2 id="modeTitle">Search Medicare provider services</h2>
+          <p id="modeDescription">Search by procedure, specialty, state, year, and result limit.</p>
+          <form id="queryForm" class="form"></form>
+          <div class="actions">
+            <button id="sampleButton" type="button">Load Sample</button>
+            <button id="runButton" type="submit" form="queryForm">Run Search</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="card results">
+        <div class="resultsHeader">
+          <div>
+            <p class="eyebrow">Results</p>
+            <h2 id="resultsTitle">Ready</h2>
+          </div>
+          <div class="actions">
+            <button id="copyButton" type="button">Copy JSON</button>
+            <button id="csvButton" type="button">Download CSV</button>
+          </div>
+        </div>
+        <div id="summary" class="summary"></div>
+        <div id="resultsBody" class="empty">Choose a search mode, load a sample, or enter filters and run a query.</div>
+      </section>
+    </main>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
