@@ -1,11 +1,6 @@
 name: Import upstream medicare-mcp
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - ".github/workflows/import-upstream.yml"
   workflow_dispatch:
 
 permissions:
@@ -17,7 +12,7 @@ jobs:
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - name: Import upstream repository
+      - name: Import upstream repository without removing app overlay
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -36,10 +31,16 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          echo "Syncing upstream files while preserving this importer workflow."
+          echo "Syncing upstream files while preserving the local app overlay."
           rsync -a --delete \
             --exclude '.git' \
             --exclude '.github/workflows' \
+            --exclude 'package.json' \
+            --exclude 'package-lock.json' \
+            --exclude 'README.md' \
+            --exclude '.env.example' \
+            --exclude 'public' \
+            --exclude 'src/web.ts' \
             "$upstream_dir/" "$target_dir/"
 
           git add -A
