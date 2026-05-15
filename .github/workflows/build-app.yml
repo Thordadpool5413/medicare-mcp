@@ -42,3 +42,30 @@ jobs:
           set -euo pipefail
           cd repo
           npm run build
+
+      - name: Verify build output
+        run: |
+          set -euo pipefail
+          cd repo
+          test -f build/index.js
+          test -f build/web.js
+          test -f public/index.html
+          test -f public/app.js
+          test -f public/styles.css
+          echo "Build output verified."
+
+      - name: Package deployable app
+        run: |
+          set -euo pipefail
+          cd repo
+          mkdir -p dist-package
+          cp -R build public data package.json package-lock.json README.md .env.example dist-package/
+          tar -czf medicare-intelligence-console.tar.gz -C dist-package .
+          ls -lh medicare-intelligence-console.tar.gz
+
+      - name: Store packaged app artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: medicare-intelligence-console
+          path: repo/medicare-intelligence-console.tar.gz
+          retention-days: 14
