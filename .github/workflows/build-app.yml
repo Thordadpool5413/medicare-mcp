@@ -59,7 +59,8 @@ jobs:
           set -euo pipefail
           cd repo
           mkdir -p dist-package
-          cp -R build public data package.json package-lock.json README.md .env.example dist-package/
+          cp -R build public data package.json README.md .env.example dist-package/
+          if [ -f package-lock.json ]; then cp package-lock.json dist-package/; fi
           tar -czf medicare-intelligence-console.tar.gz -C dist-package .
           ls -lh medicare-intelligence-console.tar.gz
 
