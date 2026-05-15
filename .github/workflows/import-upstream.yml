@@ -26,28 +26,29 @@ jobs:
           target_dir="$(mktemp -d)"
           upstream_dir="$(mktemp -d)"
 
+          echo "Cloning target repository ${GITHUB_REPOSITORY}."
           git clone "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$target_dir"
+
+          echo "Cloning upstream repository openpharma-org/medicare-mcp."
           git clone --depth 1 https://github.com/openpharma-org/medicare-mcp.git "$upstream_dir"
 
           cd "$target_dir"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+          echo "Syncing upstream files while preserving this importer workflow."
           rsync -a --delete \
             --exclude '.git' \
             --exclude '.github/workflows' \
             "$upstream_dir/" "$target_dir/"
 
-          mkdir -p "$target_dir/.github/workflows"
-          cp "$GITHUB_WORKSPACE/.github/workflows/import-upstream.yml" "$target_dir/.github/workflows/import-upstream.yml"
-
+          git add -A
           git status --short
 
-          if git diff --quiet && git diff --cached --quiet; then
+          if git diff --cached --quiet; then
             echo "No upstream changes to import."
             exit 0
           fi
 
-          git add -A
           git commit -m "Import upstream medicare-mcp source"
           git push origin HEAD:main
