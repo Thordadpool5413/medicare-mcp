@@ -2,7 +2,7 @@
 
 import express, { Request, Response } from 'express';
 import fetch from 'node-fetch';
-import { spawn, ChildProcessWithoutNullStreams } from 'child_process';
+import { spawn, ChildProcess } from 'child_process';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -15,7 +15,7 @@ const API_BASE_URL = process.env.MEDICARE_API_URL || `http://127.0.0.1:${API_POR
 const SHOULD_START_API = process.env.START_EMBEDDED_API !== 'false' && !process.env.MEDICARE_API_URL;
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 
-let embeddedApi: ChildProcessWithoutNullStreams | null = null;
+let embeddedApi: ChildProcess | null = null;
 
 function log(message: string, meta?: Record<string, unknown>) {
   const payload = { timestamp: new Date().toISOString(), message, ...(meta || {}) };
@@ -52,8 +52,8 @@ function startEmbeddedApi() {
     stdio: ['ignore', 'pipe', 'pipe']
   });
 
-  embeddedApi.stdout.on('data', (data) => process.stdout.write(`[medicare-api] ${data}`));
-  embeddedApi.stderr.on('data', (data) => process.stderr.write(`[medicare-api] ${data}`));
+  embeddedApi.stdout?.on('data', (data) => process.stdout.write(`[medicare-api] ${data}`));
+  embeddedApi.stderr?.on('data', (data) => process.stderr.write(`[medicare-api] ${data}`));
 
   embeddedApi.on('exit', (code, signal) => {
     if (code !== 0 && signal !== 'SIGTERM' && signal !== 'SIGINT') {
