@@ -34,13 +34,15 @@ create index if not exists medicare_query_runs_method_created_idx
 alter table public.medicare_saved_views enable row level security;
 alter table public.medicare_query_runs enable row level security;
 
-create policy if not exists medicare_saved_views_service_role_all
+drop policy if exists medicare_saved_views_service_role_all on public.medicare_saved_views;
+create policy medicare_saved_views_service_role_all
   on public.medicare_saved_views
   for all
   using (auth.role() = 'service_role')
   with check (auth.role() = 'service_role');
 
-create policy if not exists medicare_query_runs_service_role_all
+drop policy if exists medicare_query_runs_service_role_all on public.medicare_query_runs;
+create policy medicare_query_runs_service_role_all
   on public.medicare_query_runs
   for all
   using (auth.role() = 'service_role')
