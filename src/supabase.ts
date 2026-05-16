@@ -31,28 +31,25 @@ function parseJson(text: string) {
   }
 }
 
-function headers(prefer?: string) {
+function authHeaders(prefer?: string) {
   if (!configured()) {
     throw new Error('Supabase is not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.');
   }
 
-  const baseHeaders: Record<string, string> = {
+  const requestHeaders: Record<string, string> = {
     apikey: SUPABASE_KEY,
     authorization: `Bearer ${SUPABASE_KEY}`,
     'content-type': 'application/json'
   };
 
-  if (prefer) baseHeaders.prefer = prefer;
-  return baseHeaders;
+  if (prefer) requestHeaders.prefer = prefer;
+  return requestHeaders;
 }
 
-async function supabaseRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
+async function supabaseRequest<T>(path: string, init: RequestInit = {}, prefer?: string): Promise<T> {
   const response = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
     ...init,
-    headers: {
-      ...headers(typeof init.headers === 'object' && init.headers && 'prefer' in init.headers ? String((init.headers as Record<string, string>).prefer) : undefined),
-      ...(init.headers || {})
-    }
+    headers: authHeaders(prefer)
   });
 
   const text = await response.text();
@@ -97,9 +94,8 @@ export async function saveSavedView(input: JsonRecord) {
 
   const result = await supabaseRequest<JsonRecord[]>(`${SAVED_VIEWS_TABLE}?on_conflict=id`, {
     method: 'POST',
-    headers: { prefer: 'resolution=merge-duplicates,return=representation' },
     body: JSON.stringify(record)
-  });
+  }, 'resolution=merge-duplicates,return=representation');
 
   return Array.isArray(result) ? result[0] : result;
 }
@@ -108,9 +104,8 @@ export async function deleteSavedView(id: string, inputOwnerId?: unknown) {
   const cleanId = encodeFilterValue(id);
   const cleanOwnerId = encodeFilterValue(ownerId(inputOwnerId));
   await supabaseRequest(`${SAVED_VIEWS_TABLE}?id=eq.${cleanId}&owner_id=eq.${cleanOwnerId}`, {
-    method: 'DELETE',
-    headers: { prefer: 'return=minimal' }
-  });
+    method: 'DELETE'
+  }, 'return=minimal');
   return { id, deleted: true };
 }
 
@@ -142,9 +137,8 @@ export async function recordQueryRun(input: {
 
   const result = await supabaseRequest<JsonRecord[]>(QUERY_RUNS_TABLE, {
     method: 'POST',
-    headers: { prefer: 'return=representation' },
     body: JSON.stringify(record)
-  });
+  }, 'return=representation');
 
   return Array.isArray(result) ? result[0] : result;
 }
