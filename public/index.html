@@ -11,8 +11,11 @@
       <section class="hero card">
         <p class="eyebrow">CMS Medicare Data Console</p>
         <h1>Medicare Intelligence Console</h1>
-        <p>Search Medicare providers, prescribers, hospitals, quality data, formularies, drug spending, and ASP pricing from one clean browser app.</p>
-        <div class="status"><span id="statusDot"></span><strong id="statusText">Checking API</strong></div>
+        <p>Search Medicare providers, prescribers, hospitals, quality data, formularies, drug spending, and ASP pricing from one clean browser app with Supabase saved views and query history.</p>
+        <div class="statusRow">
+          <div class="status"><span id="statusDot"></span><strong id="statusText">Checking API</strong></div>
+          <div class="status"><span id="supabaseDot"></span><strong id="supabaseText">Checking Supabase</strong></div>
+        </div>
       </section>
 
       <section class="grid">
@@ -35,9 +38,23 @@
           <form id="queryForm" class="form"></form>
           <div class="actions">
             <button id="sampleButton" type="button">Load Sample</button>
+            <button id="saveViewButton" type="button">Save View</button>
             <button id="runButton" type="submit" form="queryForm">Run Search</button>
           </div>
         </section>
+      </section>
+
+      <section class="card savedViews">
+        <div class="resultsHeader">
+          <div>
+            <p class="eyebrow">Supabase</p>
+            <h2>Saved Views</h2>
+          </div>
+          <div class="actions">
+            <button id="refreshViewsButton" type="button">Refresh Views</button>
+          </div>
+        </div>
+        <div id="savedViewsBody" class="empty">Saved views will appear here after Supabase is configured.</div>
       </section>
 
       <section class="card results">
