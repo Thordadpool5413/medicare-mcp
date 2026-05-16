@@ -40,7 +40,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc && chmod +x build/index.js build/web.js",
+    "prebuild": "rm -rf build",
+    "build": "tsc && node -e \"const fs=require('fs'); for (const file of ['build/index.js','build/web.js']) { if (!fs.existsSync(file)) throw new Error(file + ' was not emitted by TypeScript'); fs.chmodSync(file, 0o755); }\"",
     "watch": "tsc --watch",
     "start": "node -r dotenv/config build/index.js",
     "start:http": "USE_HTTP=true node -r dotenv/config build/index.js",
